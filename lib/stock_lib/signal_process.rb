@@ -41,35 +41,34 @@ module StockLib
         #这里没有处理2日穿5日的情况
 		 @day_array.each_index do |i|
 		 if (macd_today[i].to_f > macd_2day[i].to_f) && (macd_2day[i].to_f < macd_3day[i].to_f)
-		 	signal_hash["price_average#{i}"]=true
+		 	#signal_hash["price_average#{i}"]=true
 		 else
-		 	signal_hash["price_average#{i}"]=false
+		 	#signal_hash["price_average#{i}"]=false
 		 end
 		end
-[[2,5],[2,7],[3,7],[5,8],[5,10],[7,14],[8,15]].each do |array|
 
-		(macd_today[array[0]-1].to_f > macd_today[array[1]-1].to_f) && (macd_2day[array[0]-1].to_f < macd_2day[array[1]-1].to_f) \
-		? signal_hash["price_average#{array[0]}_#{array[1]}"]=true : signal_hash["price_average#{array[0]}_#{array[1]}"]=false
-
-end
+		[[2,5],[2,7],[3,7],[5,8],[5,10],[7,14],[8,15]].each do |array|
+			(macd_today[array[0]-1].to_f > macd_today[array[1]-1].to_f) && (macd_2day[array[0]-1].to_f < macd_2day[array[1]-1].to_f) \
+				? signal_hash["price_average#{array[0]}_#{array[1]}"]=true : signal_hash["price_average#{array[0]}_#{array[1]}"]=false
+		end
 
 
        #最低价格信号发出
 		 low_price_today=today_input[1]
 		 low_price_2day=histroy_array[0][1]
 		 #low_price_3day=histroy_array[1][1]
-  #print  low_price_today
-  #puts 
-  #print  low_price_2day
          @day_array.each_index do |i|
-         	if low_price_today[i].to_f<low_price_2day[i].to_f 
-         		
-         	#	signal_hash["lowest_#{i}"]=true
-
+         	if low_price_today[i].to_f<low_price_2day[i].to_f          		
+         		#signal_hash["lowest_#{i}"]=true
          	else
-         	#	signal_hash["lowest_#{i}"]=false
+         		#signal_hash["lowest_#{i}"]=false
          	end
          end
+
+		[[2,5],[2,7],[3,7],[2,8],[2,10],[2,14],[2,15],[2,16],[2,17],[2,18]].each do |array|
+			(low_price_today[array[0]-1].to_f < low_price_today[array[1]-1].to_f) && (low_price_2day[array[0]-1].to_f > low_price_2day[array[1]-1].to_f) \
+				? signal_hash["lowest#{array[0]}_#{array[1]}"]=true : signal_hash["lowest#{array[0]}_#{array[1]}"]=false
+		end
 
         #最高价格信号发出
         high_price_today=today_input[2]
@@ -77,11 +76,16 @@ end
 
         @day_array.each_index do |i|
          	if high_price_today[i].to_f>high_price_2day[i].to_f 
-         		#signal_hash["highest_#{i}"]=true
+         	#	signal_hash["highest_#{i}"]=true
          	else
          	#	signal_hash["highest_#{i}"]=false
          	end
          end
+
+ 		[[2,5],[2,7],[3,7],[2,8],[2,10],[2,14],[2,15],[2,16],[2,17],[2,18]].each do |array|
+			(high_price_today[array[0]-1].to_f > high_price_today[array[1]-1].to_f) && (high_price_2day[array[0]-1].to_f < high_price_2day[array[1]-1].to_f) \
+				? signal_hash["highest#{array[0]}_#{array[1]}"]=true : signal_hash["highest#{array[0]}_#{array[1]}"]=false
+		end
 
         #量的信号
         volume_today=today_input[3]
@@ -98,14 +102,23 @@ end
          	end
          end
 
-true_hash=Hash.new
+         [[2,5],[2,7],[3,7],[2,8],[2,10],[2,14],[2,15],[2,16],[2,17],[2,18]].each do |array|
+			(volume_today[array[0]-1].to_f > volume_today[array[1]-1].to_f) && (volume_2day[array[0]-1].to_f < volume_2day[array[1]-1].to_f) \
+				? signal_hash["volume#{array[0]}_#{array[1]}"]=true : signal_hash["volume#{array[0]}_#{array[1]}"]=false
+		end
+
+  true_hash=Hash.new
   signal_hash.each do |key,value|
-  puts "#{key}=#{value}" if value==true
-  true_hash[key]=value if value==true
+	  puts "#{key}=#{value}" if value==true
+	  true_hash[key]=value if value==true
   end
  # signal_hash
 true_hash
 end #end of definiton
+
+def generate_state(histroy_array,today_input)
+	
+end
 	end #end of class
 end #end of module
 
